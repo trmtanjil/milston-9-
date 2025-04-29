@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
 import React, { useState } from 'react'
 import { auth } from '../infoo/firebase.init';
 import { FaEye } from "react-icons/fa";
@@ -12,6 +12,8 @@ function Signup() {
 
     const handleSignup =e=>{
         e.preventDefault();
+        const name = e.target.name.value;
+        const photo = e.target.photo.value;
         const email = e.target.eamil.value;
         const password = e.target.password.value;
         const turms = e.target.turms.checked;
@@ -54,7 +56,18 @@ function Signup() {
             .then(()=>{
                 
                 setSuccese(true)
+                alert('we sent you a verification email .please check your email')
             })
+            //update user profjile
+            const profile={
+                displayName:name,
+                photoURL:photo,
+            }
+            updateProfile(auth.currentUser, profile)
+            .then(()=>{
+                console.log('user profile updated')
+            })
+            .catch(errorr=>console.log(errorr))
           
         })
         .catch((error)=>{
@@ -70,6 +83,11 @@ function Signup() {
     <h1 className="text-5xl font-bold text-center py-4">Signup now!</h1>
       <div className="card-body">
         <form onSubmit={handleSignup} >
+          <label className="label">Name</label>
+          <input type="text" className="input" placeholder="Name" name='name'/>
+          <label className="label">Photo url</label>
+          <input type="text" className="input" placeholder="phoro url" name='photo'/>
+
           <label className="label">Email</label>
           <input type="email" className="input" placeholder="Email" name='eamil'/>
           <label className="label">Password</label>
